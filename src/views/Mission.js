@@ -21,38 +21,42 @@ import {
 	Col,
 	UncontrolledTooltip,
 	UncontrolledCarousel,
+	Badge,
+	CardFooter,
 } from 'reactstrap'
 import EditModal from '../components/EditModal'
 
 function Mission({ type, id, data, setHome }) {
+	console.log(type, id)
 	const [mission, setMission] = useState(data[type.toLowerCase()][id])
-	const [completed, setCompleted] = useState(mission.completed)
 	const [editModal, setEditModal] = useState(false)
+
+	// TODO: Handle invalid types and ids
 
 	const getParentGoal = type => {
 		let tmpType = type.toLowerCase()
 		if (tmpType === 'task') {
-			return <div>Parent Goal: {data['week'][mission.parent_goal].topic}</div>
+			return <h5>Parent Goal: {data['week'][mission.parent_goal].topic}</h5>
 		}
 		if (tmpType === 'week') {
-			return <div>Parent Goal: {data['month'][mission.parent_goal].topic}</div>
+			return <h5>Parent Goal: {data['month'][mission.parent_goal].topic}</h5>
 		}
 		if (tmpType === 'month') {
-			return <div>Parent Goal: {data['long'][mission.parent_goal].topic}</div>
+			return <h5>Parent Goal: {data['long'][mission.parent_goal].topic}</h5>
 		}
 		if (tmpType === 'long') {
-			return <div>Deadline: {mission.deadline}</div>
+			return <h5>Deadline: {new Date(mission.deadline).toLocaleDateString()}</h5>
 		}
 	}
 
 	// useEffect(() => {}, [mission])
 	const markCompleted = () => {
 		//async code ... Remove the tmp code below
+		// Do not reload just update the data state of app.js
 		let tmpMission = mission
 		tmpMission.completed = 1
 		tmpMission.complete_date = new Date().toISOString()
 		setMission(tmpMission)
-		setCompleted(1)
 	}
 
 	return (
@@ -65,30 +69,55 @@ function Mission({ type, id, data, setHome }) {
 				data={data}
 				setMission={e => setMission(e)}
 			/>
-			{!mission.completed && (
-				<Button color="success" onClick={() => markCompleted()}>
-					Complete
-				</Button>
-			)}
-			<Button color="default" onClick={() => setEditModal(true)}>
-				Edit
+			<h1 className="h1-seo mt-4">RTM</h1>
+			<Button color="default" className="btn-round  back-btn" onClick={() => setHome(true)}>
+				<i className="tim-icons icon-double-left" />
 			</Button>
-			<Button color="default" onClick={() => setHome(true)}>
-				Home
-			</Button>
+
 			<Container>
-				<h5 className="mission-topic-type">{type.toUpperCase()}</h5>
-				<h1 className="mission-topic">{mission.topic}</h1>
-				<div>{mission.completed ? <p>Completed</p> : <p>Pending</p>}</div>
-				{console.log(mission.completed)}
-				<div className="typography-line">
-					<span>Description</span>
-					<blockquote>
-						<p className="blockquote blockquote-info">{mission.description}</p>
-					</blockquote>
-				</div>
-				<div>Created At: {mission.create_date}</div>
-				{getParentGoal(type)}
+				<Row>
+					<Col sm="12" md="3">
+						<Card>
+							<CardBody>
+								<div>
+									{mission.completed ? (
+										<Badge color="success" pill>
+											Completed
+										</Badge>
+									) : (
+										<Badge color="danger" pill>
+											Pending
+										</Badge>
+									)}
+								</div>
+								<h5>Type: {type.toUpperCase()}</h5>
+								{/* {new Date().toISOString()} */}
+								<h5>Created At: {new Date(mission.create_date).toLocaleDateString()}</h5>
+								{getParentGoal(type)}
+							</CardBody>
+							<CardFooter>
+								{!mission.completed && (
+									<Button color="success" size="sm" onClick={() => markCompleted()}>
+										Complete
+									</Button>
+								)}
+								<Button color="default" size="sm" onClick={() => setEditModal(true)}>
+									Edit
+								</Button>
+							</CardFooter>
+						</Card>
+					</Col>
+					<Col sm="12" md="9">
+						<Card>
+							<CardBody>
+								<CardHeader>
+									<h1 className="mission-topic">{mission.topic}</h1>
+								</CardHeader>
+								<p className="blockquote blockquote-info">{mission.description}</p>
+							</CardBody>
+						</Card>
+					</Col>
+				</Row>
 			</Container>
 		</>
 	)

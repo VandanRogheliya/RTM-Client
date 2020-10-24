@@ -37,7 +37,7 @@ const reducer = (state, action) => {
 	}
 }
 
-function Home({data}) {
+function Home({data, setType, setId, setHome}) {
 
 
 	const [searchQuery, setSearchQuery] = useState('')
@@ -47,7 +47,7 @@ function Home({data}) {
 	const [category, setCategoryTo] = useReducer(reducer, initialState)
 
 	return (
-		<div>
+		<div className="home-page">
 			<div className="wrapper index-page">
 				<PageHeader />
 			</div>
@@ -61,10 +61,17 @@ function Home({data}) {
 			<SearchBar setSearchQuery={newQuery => setSearchQuery(newQuery)} />
 
 			{(searchQuery || !category.all) && (
-				<TableList data={data} display={category} searchQuery={searchQuery} />
+				<TableList
+					data={data}
+					display={category}
+					searchQuery={searchQuery}
+					setType={e => setType(e)}
+					setId={e => setId(e)}
+					setHome={e => setHome(e)}
+				/>
 			)}
 
-			{category.all && <Menu setCategoryTo={type => setCategoryTo(type)} />}
+			{category.all && <Menu setCategoryTo={type => setCategoryTo(type)} data={data}/>}
 		</div>
 	)
 }

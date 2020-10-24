@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react'
+import { NavLink } from 'react-router-dom'
 
 import {
 	Button,
@@ -14,32 +15,40 @@ import {
 	Table,
 } from 'reactstrap'
 
-String.prototype.toProperCase = function () {
-	return this.replace(/\w\S*/g, function (txt) {
-		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-	})
-}
+// String.prototype.toProperCase = function () {
+// 	return this.replace(/\w\S*/g, function (txt) {
+// 		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
+// 	})
+// }
 
-export default function TableList({ data, searchQuery, display }) {
-	console.log(searchQuery)
-
+export default function TableList({ data, searchQuery, display, setType, setId, setHome }) {
 	const populateTable = type => {
 		var entries = []
 		var pattern = new RegExp(searchQuery, 'gi')
 		for (var key in data[type]) {
+			let id = key
 			if (searchQuery && !pattern.test(data[type][key].topic)) continue
 
 			entries.push(
 				<tr>
-					<th scope="row" >
-						{type.toProperCase()}
-					</th>
-					<td colSpan="3">{data[type][key].topic}</td>
+					<th scope="row">{type.toUpperCase()}</th>
+					<td colSpan="3">
+						<Button className="btn-link" color="primary" onClick={() => onSelect(type, id)}>
+							{data[type][key].topic}
+						</Button>
+					</td>
 				</tr>
 			)
 		}
 
 		return entries
+	}
+
+	const onSelect = (type, key) => {
+		console.log(key);
+		setId(key)
+		setType(type)
+		setHome(false)
 	}
 
 	// useEffect(() => {}, [searchQuery])

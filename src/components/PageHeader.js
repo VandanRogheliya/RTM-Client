@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Container } from 'reactstrap'
+import qoutes from "../assets/thoughts/quotes.json"
 
 function PageHeader() {
+	const [thought, setThought] = useState(qoutes[Math.floor(Math.random() * 1642)])
+	// console.log(Math.floor(Math.random() * 1642))
 	return (
 		<div className="page-header header-filter">
 			<div className="squares square1" />
@@ -14,9 +17,7 @@ function PageHeader() {
 			<Container>
 				<div className="content-center brand">
 					<h1 className="h1-seo">RTM• Macro To Micro</h1>
-					<h3 className="d-none d-sm-block">
-						A Deep meaningful thought. Also can be motivational. Right here.
-					</h3>
+					<h3 className="d-none d-sm-block">{thought.text} - <i>{thought.author}</i></h3>
 				</div>
 			</Container>
 		</div>

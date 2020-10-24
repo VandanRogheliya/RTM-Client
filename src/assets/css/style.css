@@ -3,3 +3,20 @@
   font-size: 500%;
   font-weight: 900;
 }
+
+.back-btn {
+  position: fixed;
+  left:2%;
+  top:2%;
+  height: 2.375rem;
+  min-width: 2.375rem;
+  width: 2.375rem;
+  padding: 0;
+  font-size: 0.9375rem;
+  overflow: hidden;
+  line-height: normal;
+}
+
+div.home-page {
+  margin-bottom: 200px;
+}
