@@ -17,7 +17,9 @@ function PageHeader() {
 			<Container>
 				<div className="content-center brand">
 					<h1 className="h1-seo">RTM• Macro To Micro</h1>
-					<h3 className="d-none d-sm-block">{thought.text} - <i>{thought.author}</i></h3>
+					<h3 className="d-none d-sm-block">
+						{thought.text} {thought.author && <i> - {thought.author}</i>}
+					</h3>
 				</div>
 			</Container>
 		</div>

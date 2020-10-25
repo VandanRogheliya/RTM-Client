@@ -103,22 +103,33 @@ function AddModal({ isOpen, toggleModal, data }) {
 		}
 		return populateGoalsHelper(parentType, data)
 	}
-	const onSave = () => {
+	const onSave = async () => {
 		var form = {
 			topic: topic.trim(),
 			description: description.trim(),
-			create_date: new Date().toISOString(),
+			create_date: new Date().toISOString().slice(0, 19).replace('T', ' '),
+			completed: 0,
+			complete_date: null,
 		}
 
-		if (type !== 'long') form.parent_goal = parent
-		else form.deadline = deadline
+		// TODO: check whether form object is complete or not
 
 		setIsError(false)
 		setIsSaved(false)
-
-		console.log(form, type);
-
+		
+		console.log(form, type)
+		
 		try {
+			if (type !== 'long') form.parent_goal = parent
+			else {
+				let currentDate = new Date()
+				if (currentDate > deadline) {
+					throw new Error('Deadline has to be in the future.')
+				} else {
+					form.deadline = deadline.toISOString().slice(0, 19).replace('T', ' ')
+				}
+			}
+
 			if (form.topic.length > 50) {
 				throw new Error('Topic is too long, please limit it to 50 characters.')
 			}
@@ -141,9 +152,18 @@ function AddModal({ isOpen, toggleModal, data }) {
 
 			setIsLoading(true)
 
-			// Interact with DATA BASE TODO:
-			// reload
+			var resp = await fetch(`http://localhost:5000/${type.toLowerCase()}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(form),
+			})
 
+			resp = await resp.json()
+			console.log(resp);
+			window.location.reload()
+			
 			setIsSaved(true)
 		} catch (err) {
 			setIsError(true)
@@ -158,6 +178,14 @@ function AddModal({ isOpen, toggleModal, data }) {
 		setFunction(value)
 	}
 
+	const dateHandler = (date) => {
+		date = new Date(date)
+		date.setDate(date.getDate() + 1)
+		date.setHours(0, 0, 0, 0)
+		
+		onChangeHandler(date, setDeadline)
+	}
+
 	return (
 		<div>
 			<Modal modalClassName="modal-black" isOpen={isOpen} toggle={() => toggleModal()}>
@@ -166,7 +194,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 						<i className="tim-icons icon-simple-remove text-white" />
 					</button>
 					<div className="text-muted text-center ml-auto mr-auto">
-						<h3 className="mb-0">Edit</h3>
+						<h3 className="mb-0">Add New Task/Goal</h3>
 					</div>
 				</div>
 				<div className="modal-body">
@@ -226,7 +254,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 						</FormGroup>
 						{type !== 'long' ? (
 							<FormGroup className="mb-3">
-								<Label for="parent">Parent</Label>
+								<Label for="parent">Parent Goal</Label>
 
 								<InputGroup
 									className={classnames('input-group-alternative', {
@@ -263,7 +291,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 										timeFormat={false}
 										className="w-100"
 										inputProps={{ placeholder: 'Pick a deadline' }}
-										onChange={e => onChangeHandler(e.toISOString(), setDeadline)}
+										onChange={e => dateHandler(e)}
 									/>
 								</InputGroup>
 							</FormGroup>

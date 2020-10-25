@@ -19,7 +19,6 @@ import DeleteModal from './DeleteModal'
 const initialState = {
 	topicFocus: false,
 	descFocus: false,
-	parentGoal: false,
 }
 
 const reducer = (state, action) => {
@@ -28,19 +27,11 @@ const reducer = (state, action) => {
 			return {
 				topicFocus: true,
 				descFocus: false,
-				parentGoal: false,
 			}
 		case 'desc':
 			return {
 				topicFocus: false,
 				descFocus: true,
-				parentGoal: false,
-			}
-		case 'parent':
-			return {
-				topicFocus: false,
-				descFocus: false,
-				parentGoal: true,
 			}
 		default:
 			return initialState
@@ -60,7 +51,6 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 	const [focus, focusReducer] = useReducer(reducer, initialState)
 	console.log(type)
 	const [topic, setTopic] = useState(mission.topic)
-	const [parent, setParent] = useState(mission.parent_goal)
 	const [description, setDescription] = useState(mission.description)
 	const [isComplete, setIsComplete] = useState(mission.completed)
 	const [isError, setIsError] = useState(false)
@@ -77,14 +67,12 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 		return options
 	}
 
-	const onUpdate = () => {
+	const onUpdate = async () => {
 		var form = {
 			topic: topic.trim(),
 			description: description.trim(),
-			completed: isComplete,
+			completed: isComplete ? 1 : 0,
 		}
-
-		if (mission.parent_goal) form.parent_goal = parent
 
 		setIsError(false)
 		setIsSaved(false)
@@ -97,34 +85,44 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 			if (form.description.length > 500) {
 				throw new Error('Description is too long, please limit it to 500 characters.')
 			}
-			
+
 			if (form.topic.length === 0 || form.description.length === 0) {
 				throw new Error('Topic and/or Description can not be empty.')
 			}
 			if (!data.completed && form.completed) {
-				form.complete_date = new Date().toISOString()
+				form.complete_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 			}
+			// Update the string form to : 2020-10-08 00:00:00.0 TODO:
 
 			setIsLoading(true)
 
-			// Interact with DATA BASE TODO:
-			// Do not reload just update the app.js's data state
+			console.log(JSON.stringify(form))
 
-			var tmpMission = mission
-			tmpMission.topic = form.topic
-			tmpMission.description = form.description
-			tmpMission.completed = form.completed
-			if (form.parent_goal) tmpMission.parent_goal = form.parent_goal
+			await fetch(`http://localhost:5000/${type.toLowerCase()}/${mission.id}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(form),
+			})
 
-			setMission(tmpMission)
-
+			setIsLoading(false)
 			setIsSaved(true)
+
+			window.location.reload()
+			// resp = await resp.json()
+
+			// var tmpMission = mission
+			// tmpMission.topic = form.topic
+			// tmpMission.description = form.description
+			// tmpMission.completed = form.completed
+			// if (form.parent_goal) tmpMission.parent_goal = form.parent_goal
+
+			// setMission(tmpMission)
 		} catch (err) {
 			setIsError(true)
 			setErrorMessage(err.message)
 		}
-
-		setIsLoading(false)
 	}
 
 	const onChangeHandler = (value, setFunction) => {
@@ -132,10 +130,24 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 		setFunction(value)
 	}
 
-	const onDelete = () => {
-		// Send delete request
-		// TODO:
-		// Reload after the query
+	const onDelete = async () => {
+		try {
+			var resp = await fetch(`http://localhost:5000/${type.toLowerCase()}/${mission.id}`, {
+				method: 'DELETE',
+			})
+			resp = await resp.json()
+			console.log(resp)
+
+			if (resp.code !== 200) {
+				throw new Error('Something went wrong. Are you trying to delete a goal which is being referenced?')
+			}
+
+			window.location.reload()
+		} catch (err) {
+			setToggleDelete(false)
+			setIsError(true)
+			setErrorMessage(err.message)
+		}
 	}
 
 	return (
@@ -175,34 +187,7 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 								/>
 							</InputGroup>
 						</FormGroup>
-						{type !== 'long' && (
-							<FormGroup className="mb-3">
-								<Label for="parent">Parent</Label>
 
-								<InputGroup
-									className={classnames('input-group-alternative', {
-										'input-group-focus': focus.parentGoal,
-									})}
-								>
-									<InputGroupAddon addonType="prepend">
-										<InputGroupText>
-											<i className="tim-icons icon-shape-star" />
-										</InputGroupText>
-									</InputGroupAddon>
-									<Input
-										type="select"
-										id="parent"
-										placeholder="Parent Goal"
-										onFocus={e => focusReducer('parent')}
-										onBlur={e => focusReducer()}
-										defaultValue={parent}
-										onChange={e => onChangeHandler(e.target.value, setParent)}
-									>
-										{populateOption()}
-									</Input>
-								</InputGroup>
-							</FormGroup>
-						)}
 						<FormGroup className="mb-3">
 							<Label for="description">Description</Label>
 							<InputGroup

@@ -81,9 +81,12 @@ function Mission({ type, id, data, setHome }) {
 							<CardBody>
 								<div>
 									{mission.completed ? (
-										<Badge color="success" pill>
-											Completed
-										</Badge>
+										<>
+											<Badge color="success" pill>
+												Completed
+											</Badge>
+											<h5 className="mt-2">Completed On: {new Date(mission.complete_date).toLocaleDateString()}</h5>
+										</>
 									) : (
 										<Badge color="danger" pill>
 											Pending
@@ -96,12 +99,7 @@ function Mission({ type, id, data, setHome }) {
 								{getParentGoal(type)}
 							</CardBody>
 							<CardFooter>
-								{!mission.completed && (
-									<Button color="success" size="sm" onClick={() => markCompleted()}>
-										Complete
-									</Button>
-								)}
-								<Button color="default" size="sm" onClick={() => setEditModal(true)}>
+								<Button color="primary" size="sm" onClick={() => setEditModal(true)}>
 									Edit
 								</Button>
 							</CardFooter>

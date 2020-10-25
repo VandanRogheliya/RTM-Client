@@ -1,21 +1,22 @@
 import React, { useState } from 'react'
+
+// Styles
 import './assets/css/nucleo-icons.css'
 import './assets/scss/blk-design-system-react.scss?v=1.1.0'
 import './assets/css/style.css'
-// import './assets/demo/demo.css'
-
 import './App.css'
+
+// Components
 import Home from './views/Home'
 import Mission from './views/Mission'
 
-// import month from './sampleData/month.json'
-// import week from './sampleData/week.json'
-// import long from './sampleData/long.json'
-// import task from './sampleData/task.json'
-
+// App Component
 function App() {
-	const [isLoading, setIsLoading] = useState(false)
 
+	// Loading State
+	const [isLoading, setIsLoading] = useState(true)
+
+	// Data State
 	const [data, setData] = useState({
 		task: -1,
 		week: -1,
@@ -23,10 +24,14 @@ function App() {
 		long: -1,
 	})
 
+	// Home State, if true shows Home else Mission 
 	const [home, setHome] = useState(true)
+
+	// States of goal/task for Mission component
 	const [type, setType] = useState('')
 	const [id, setId] = useState(0)
 
+	// Fetching All Data
 	const getData = async () => {
 		var taskData = new Map()
 		var weekData = new Map()
@@ -45,21 +50,28 @@ function App() {
 		var long = await fetch('http://localhost:5000/long')
 		long = await long.json()
 
+		// Storing each task/goal in form of map. Key -> ID and Value -> task/goal object
 		task.forEach(e => (taskData[e.id] = e))
 		week.forEach(e => (weekData[e.id] = e))
 		month.forEach(e => (monthData[e.id] = e))
 		long.forEach(e => (longData[e.id] = e))
 
+		// Changing State
 		setData({
 			task: taskData,
 			week: weekData,
 			month: monthData,
 			long: longData,
 		})
+
+		// Setting Loading to false
+		setIsLoading(false)
 	}
 
+	// If data has not yet been fetch, then fetch it
 	if (data.task === -1) getData()
 	
+	// Rendering JSX
 	return (
 		<div className="App">
 			{isLoading ? (
