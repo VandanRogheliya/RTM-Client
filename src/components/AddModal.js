@@ -62,11 +62,11 @@ const reducer = (state, action) => {
 // Populate Goals Helper function
 const populateGoalsHelper = (parentType, data) => {
 	var options = []
+	options.push(<option value={-1}>No Parent Goal Selected</option>)
 	for (var key in data[parentType]) {
-		options.push(<option value={key}>{data[parentType][key].topic}</option>)
+		options.push(<option key={key} value={key}>{data[parentType][key].topic}</option>)
 	}
 
-	if (options.length === 0) options.push(<option value={-1}>No Parent Goal Available</option>)
 	return options
 }
 
@@ -144,7 +144,6 @@ function AddModal({ isOpen, toggleModal, data }) {
 			if (form.topic.length === 0 || form.description.length === 0) {
 				throw new Error('Topic and/or Description can not be empty.')
 			}
-
 			if (form.parent_goal && form.parent_goal === -1) {
 				throw new Error('There are no parent goals, please make a parent goal before.')
 			}

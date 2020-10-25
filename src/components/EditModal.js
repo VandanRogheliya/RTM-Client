@@ -211,7 +211,7 @@ function EditModal({ isOpen, toggleModal, type, mission, data }) {
 						<CardSubtitle>Mission is</CardSubtitle>
 						<Switch
 							size="lg"
-							defaultValue={isComplete}
+							defaultValue={Boolean(isComplete)}
 							onChange={e => onChangeHandler(e.state.value, setIsComplete)}
 							offColor="success"
 							offText={<i className="tim-icons icon-simple-remove" />}

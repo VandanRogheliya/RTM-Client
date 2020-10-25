@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 // Importing Bootstrap components
 import { Button, Table } from 'reactstrap'
@@ -21,7 +21,7 @@ export default function TableList({ data, searchQuery, display, setType, setId, 
 
 			// Else push the row in
 			entries.push(
-				<tr>
+				<tr key={id}>
 					<th scope="row">{type.toUpperCase()}</th>
 					<td colSpan="3">
 						<Button className="btn-link" color="primary" onClick={() => onSelect(type, id)}>
