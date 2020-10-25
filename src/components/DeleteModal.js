@@ -1,9 +1,9 @@
 import React from 'react'
-import {
-	Button,
-	Modal,
-} from 'reactstrap'
 
+// Importing Bootstrap Components
+import { Button, Modal } from 'reactstrap'
+
+// Delete component defination
 function DeleteModal({ toggle, toggleModal, onDelete }) {
 	return (
 		<div>
@@ -12,6 +12,7 @@ function DeleteModal({ toggle, toggleModal, onDelete }) {
 				isOpen={toggle}
 				toggle={() => toggleModal(!toggle)}
 			>
+				{/* Message */}
 				<div className="modal-header justify-content-center">
 					<button className="close" onClick={e => toggleModal(!toggle)}>
 						<i className="tim-icons icon-simple-remove text-white" />
@@ -23,6 +24,8 @@ function DeleteModal({ toggle, toggleModal, onDelete }) {
 				<div className="modal-body">
 					<p>Warning! This will delete the mission permanently</p>
 				</div>
+
+				{/* Delete Button */}
 				<Button className="btn-neutral mb-2" color="link" type="button" onClick={() => onDelete()}>
 					Delete
 				</Button>

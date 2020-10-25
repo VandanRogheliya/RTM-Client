@@ -1,4 +1,6 @@
 import React, { useReducer, useState } from 'react'
+
+// Importing UI/Boostrap components
 import Datetime from 'react-datetime'
 import classnames from 'classnames'
 import {
@@ -11,22 +13,17 @@ import {
 	InputGroup,
 	InputGroupText,
 	InputGroupAddon,
-	CardSubtitle,
 	Alert,
-	CardHeader,
-	Card,
-	CardTitle,
-	CardBody,
 } from 'reactstrap'
-import Switch from 'react-bootstrap-switch'
-import DeleteModal from './DeleteModal'
 
+// Focus initialState
 const initialState = {
 	topicFocus: false,
 	descFocus: false,
 	parentGoal: false,
 }
 
+// Focus reducer
 const reducer = (state, action) => {
 	switch (action) {
 		case 'topic':
@@ -62,6 +59,7 @@ const reducer = (state, action) => {
 	}
 }
 
+// Populate Goals Helper function
 const populateGoalsHelper = (parentType, data) => {
 	var options = []
 	for (var key in data[parentType]) {
@@ -72,19 +70,25 @@ const populateGoalsHelper = (parentType, data) => {
 	return options
 }
 
+// AddModal component defination
 function AddModal({ isOpen, toggleModal, data }) {
+	// Input focus reducer
 	const [focus, focusReducer] = useReducer(reducer, initialState)
+
+	// Form states
 	const [topic, setTopic] = useState('')
 	const [type, setType] = useState('task')
 	const [parent, setParent] = useState(-1)
 	const [deadline, setDeadline] = useState(new Date().toISOString())
 	const [description, setDescription] = useState('')
 
+	// Alert states
 	const [isError, setIsError] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
 	const [isSaved, setIsSaved] = useState(false)
 
+	// Populates option in parent dropdown
 	const populateOption = type => {
 		let parentType
 
@@ -103,6 +107,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 		}
 		return populateGoalsHelper(parentType, data)
 	}
+
+	// on Submit handler
 	const onSave = async () => {
 		var form = {
 			topic: topic.trim(),
@@ -112,14 +118,11 @@ function AddModal({ isOpen, toggleModal, data }) {
 			complete_date: null,
 		}
 
-		// TODO: check whether form object is complete or not
-
 		setIsError(false)
 		setIsSaved(false)
-		
-		console.log(form, type)
-		
+
 		try {
+			// Validation starts
 			if (type !== 'long') form.parent_goal = parent
 			else {
 				let currentDate = new Date()
@@ -145,6 +148,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 			if (form.parent_goal && form.parent_goal === -1) {
 				throw new Error('There are no parent goals, please make a parent goal before.')
 			}
+			// Validation Done
 
 			if (!data.completed && form.completed) {
 				form.complete_date = new Date().toISOString()
@@ -152,7 +156,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 
 			setIsLoading(true)
 
-			var resp = await fetch(`http://localhost:5000/${type.toLowerCase()}`, {
+			await fetch(`http://localhost:5000/${type.toLowerCase()}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -160,10 +164,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 				body: JSON.stringify(form),
 			})
 
-			resp = await resp.json()
-			console.log(resp);
 			window.location.reload()
-			
+
 			setIsSaved(true)
 		} catch (err) {
 			setIsError(true)
@@ -178,11 +180,11 @@ function AddModal({ isOpen, toggleModal, data }) {
 		setFunction(value)
 	}
 
-	const dateHandler = (date) => {
+	const dateHandler = date => {
 		date = new Date(date)
 		date.setDate(date.getDate() + 1)
 		date.setHours(0, 0, 0, 0)
-		
+
 		onChangeHandler(date, setDeadline)
 	}
 
@@ -199,6 +201,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 				</div>
 				<div className="modal-body">
 					<Form role="form">
+						{/* TOPIC */}
 						<FormGroup className="mb-3">
 							<Label for="topic">Topic</Label>
 
@@ -223,6 +226,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 								/>
 							</InputGroup>
 						</FormGroup>
+
+						{/* TYPE */}
 						<FormGroup className="mb-3">
 							<Label for="parent">Type</Label>
 
@@ -254,6 +259,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 						</FormGroup>
 						{type !== 'long' ? (
 							<FormGroup className="mb-3">
+								{/* PARENT GOAL */}
+
 								<Label for="parent">Parent Goal</Label>
 
 								<InputGroup
@@ -281,7 +288,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 							</FormGroup>
 						) : (
 							<FormGroup>
-								<Label for="parent">Parent</Label>
+								{/* Deadline */}
+								<Label for="parent">Deadline</Label>
 								<InputGroup
 									className={classnames('input-group-alternative', {
 										'input-group-focus': focus.parentGoal,
@@ -296,6 +304,8 @@ function AddModal({ isOpen, toggleModal, data }) {
 								</InputGroup>
 							</FormGroup>
 						)}
+
+						{/* DESCRIPTION */}
 						<FormGroup className="mb-3">
 							<Label for="description">Description</Label>
 							<InputGroup
@@ -315,11 +325,13 @@ function AddModal({ isOpen, toggleModal, data }) {
 							</InputGroup>
 						</FormGroup>
 
+						{/* Alerts */}
 						{isError && <Alert color="warning">{errorMessage}</Alert>}
 						{isLoading && <Alert color="info">Updating Database. Thank you for waiting.</Alert>}
 						{isSaved && <Alert color="success">Changes saved successfully.</Alert>}
 
 						<div className="text-center">
+							{/* Save Button */}
 							<Button className="my-4" color="primary" type="button" onClick={() => onSave()}>
 								Save
 							</Button>

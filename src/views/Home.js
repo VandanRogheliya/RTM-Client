@@ -1,27 +1,18 @@
 import React, { useReducer, useState } from 'react'
-import PageHeader from '../components/PageHeader'
 
-import {
-	Button,
-	Label,
-	FormGroup,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-	Container,
-	Row,
-	Col,
-	Table,
-} from 'reactstrap'
+// Importing Components
+import PageHeader from '../components/PageHeader'
 import Menu from '../components/Menu'
 import SearchBar from '../components/SearchBar'
 import TableList from '../components/TableList'
 
+// Importing Bootstrap Components
+import { Button } from 'reactstrap'
 
-
+// Which catagory to display initially
 const initialState = { task: true, week: true, month: true, long: true, all: true }
 
+// Changing catagory display
 const reducer = (state, action) => {
 	switch (action) {
 		case 'task':
@@ -37,29 +28,33 @@ const reducer = (state, action) => {
 	}
 }
 
-function Home({data, setType, setId, setHome}) {
-
-
+// Home Component defination
+function Home({ data, setType, setId, setHome }) {
+	// Search Query State
 	const [searchQuery, setSearchQuery] = useState('')
 
-	// const [category, setCategory] = useState()
-
+	// Catagory reducer
 	const [category, setCategoryTo] = useReducer(reducer, initialState)
 
+	// Rendering JSX
 	return (
 		<div className="home-page">
+			{/* Page Header component. Title and Quotes  */}
 			<div className="wrapper index-page">
 				<PageHeader />
 			</div>
 
+			{/* Conditionally displays home button */}
 			{!category.all && (
 				<Button color="primary" onClick={() => setCategoryTo('')}>
 					Home
 				</Button>
 			)}
 
+			{/* Search Bar */}
 			<SearchBar setSearchQuery={newQuery => setSearchQuery(newQuery)} />
 
+			{/* Conditionally displays result table */}
 			{(searchQuery || !category.all) && (
 				<TableList
 					data={data}
@@ -70,8 +65,9 @@ function Home({data, setType, setId, setHome}) {
 					setHome={e => setHome(e)}
 				/>
 			)}
-
-			{category.all && <Menu setCategoryTo={type => setCategoryTo(type)} data={data}/>}
+			
+			{/* Catagory selection menue */}
+			{category.all && <Menu setCategoryTo={type => setCategoryTo(type)} data={data} />}
 		</div>
 	)
 }

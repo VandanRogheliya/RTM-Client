@@ -1,34 +1,25 @@
 import React, { useEffect } from 'react'
-import { NavLink } from 'react-router-dom'
 
-import {
-	Button,
-	Label,
-	FormGroup,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-	Container,
-	Row,
-	Col,
-	Table,
-} from 'reactstrap'
+// Importing Bootstrap components
+import { Button, Table } from 'reactstrap'
 
-// String.prototype.toProperCase = function () {
-// 	return this.replace(/\w\S*/g, function (txt) {
-// 		return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-// 	})
-// }
-
+// Table List component defination
 export default function TableList({ data, searchQuery, display, setType, setId, setHome }) {
+	// Population table with rows
 	const populateTable = type => {
 		var entries = []
+
+		// Regex pattern. Checks the topic of a task/goal
 		var pattern = new RegExp(searchQuery, 'gi')
+
+		// Iterating through map
 		for (var key in data[type]) {
 			let id = key
+
+			// If pattern fails then continue
 			if (searchQuery && !pattern.test(data[type][key].topic)) continue
 
+			// Else push the row in
 			entries.push(
 				<tr>
 					<th scope="row">{type.toUpperCase()}</th>
@@ -44,15 +35,14 @@ export default function TableList({ data, searchQuery, display, setType, setId, 
 		return entries
 	}
 
+	// Sets id and type of mission to display Mission Component
 	const onSelect = (type, key) => {
-		console.log(key);
 		setId(key)
 		setType(type)
 		setHome(false)
 	}
 
-	// useEffect(() => {}, [searchQuery])
-
+	// Rendering JSX
 	return (
 		<div>
 			<Table className="mb-5 pb-5">
@@ -63,6 +53,7 @@ export default function TableList({ data, searchQuery, display, setType, setId, 
 					</tr>
 				</thead>
 				<tbody>
+					{/* Checking each catagory */}
 					{display.task && populateTable('task')}
 					{display.week && populateTable('week')}
 					{display.month && populateTable('month')}

@@ -1,4 +1,9 @@
 import React, { useReducer, useState } from 'react'
+
+// Importing components
+import DeleteModal from './DeleteModal'
+
+// Importing UI/Bootstrap components
 import classnames from 'classnames'
 import {
 	Button,
@@ -14,13 +19,14 @@ import {
 	Alert,
 } from 'reactstrap'
 import Switch from 'react-bootstrap-switch'
-import DeleteModal from './DeleteModal'
 
+// Focus initialState
 const initialState = {
 	topicFocus: false,
 	descFocus: false,
 }
 
+// Focus reducer funtion
 const reducer = (state, action) => {
 	switch (action) {
 		case 'topic':
@@ -38,46 +44,41 @@ const reducer = (state, action) => {
 	}
 }
 
-const populateGoalsHelper = (parentType, data) => {
-	var options = []
-	for (var key in data[parentType]) {
-		options.push(<option value={key}>{data[parentType][key].topic}</option>)
-	}
-
-	return options
-}
-
-function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
+// Edit Modal comonent defination
+function EditModal({ isOpen, toggleModal, type, mission, data }) {
+	// Input Focus reducer
 	const [focus, focusReducer] = useReducer(reducer, initialState)
-	console.log(type)
+
+	// Form States
 	const [topic, setTopic] = useState(mission.topic)
 	const [description, setDescription] = useState(mission.description)
 	const [isComplete, setIsComplete] = useState(mission.completed)
+
+	// Alert States
 	const [isError, setIsError] = useState(false)
 	const [errorMessage, setErrorMessage] = useState('')
 	const [isLoading, setIsLoading] = useState(false)
-	const [toggleDelete, setToggleDelete] = useState(false)
 	const [isSaved, setIsSaved] = useState(false)
 
-	const populateOption = () => {
-		var options
-		if (type.toLowerCase() === 'task') options = populateGoalsHelper('week', data)
-		else if (type.toLowerCase() === 'week') options = populateGoalsHelper('month', data)
-		else if (type.toLowerCase() === 'month') options = populateGoalsHelper('long', data)
-		return options
-	}
+	// delete Modal toggle state
+	const [toggleDelete, setToggleDelete] = useState(false)
 
+	// Submit handler
 	const onUpdate = async () => {
+		// Creates form object
 		var form = {
 			topic: topic.trim(),
 			description: description.trim(),
 			completed: isComplete ? 1 : 0,
 		}
 
+		// Resetting errors
 		setIsError(false)
 		setIsSaved(false)
 
+		// Error handling with try catch
 		try {
+			//Validation Starts
 			if (form.topic.length > 50) {
 				throw new Error('Topic is too long, please limit it to 50 characters.')
 			}
@@ -92,12 +93,11 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 			if (!data.completed && form.completed) {
 				form.complete_date = new Date().toISOString().slice(0, 19).replace('T', ' ')
 			}
-			// Update the string form to : 2020-10-08 00:00:00.0 TODO:
+			//Validation done
 
 			setIsLoading(true)
 
-			console.log(JSON.stringify(form))
-
+			// PUT request sent to database
 			await fetch(`http://localhost:5000/${type.toLowerCase()}/${mission.id}`, {
 				method: 'PUT',
 				headers: {
@@ -106,50 +106,49 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 				body: JSON.stringify(form),
 			})
 
+			// If request is processed successfully
 			setIsLoading(false)
 			setIsSaved(true)
 
+			// Reloads the tab
 			window.location.reload()
-			// resp = await resp.json()
-
-			// var tmpMission = mission
-			// tmpMission.topic = form.topic
-			// tmpMission.description = form.description
-			// tmpMission.completed = form.completed
-			// if (form.parent_goal) tmpMission.parent_goal = form.parent_goal
-
-			// setMission(tmpMission)
 		} catch (err) {
+			// Displays error alert with the message
 			setIsError(true)
 			setErrorMessage(err.message)
 		}
 	}
 
+	// Change handler, resets the save alerts
 	const onChangeHandler = (value, setFunction) => {
 		setIsSaved(false)
 		setFunction(value)
 	}
 
+	// Delete handler
 	const onDelete = async () => {
 		try {
 			var resp = await fetch(`http://localhost:5000/${type.toLowerCase()}/${mission.id}`, {
 				method: 'DELETE',
 			})
-			resp = await resp.json()
-			console.log(resp)
 
+			resp = await resp.json()
+
+			// If delete request is unsuccessful then throws error.
 			if (resp.code !== 200) {
 				throw new Error('Something went wrong. Are you trying to delete a goal which is being referenced?')
 			}
 
 			window.location.reload()
 		} catch (err) {
+			// Closes delete popup and displays the error alert with the message
 			setToggleDelete(false)
 			setIsError(true)
 			setErrorMessage(err.message)
 		}
 	}
 
+	// Rendering JSX
 	return (
 		<div>
 			<Modal modalClassName="modal-black" isOpen={isOpen} toggle={() => toggleModal()}>
@@ -163,9 +162,9 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 				</div>
 				<div className="modal-body">
 					<Form role="form">
+						{/* TOPIC */}
 						<FormGroup className="mb-3">
 							<Label for="topic">Topic</Label>
-
 							<InputGroup
 								className={classnames('input-group-alternative', {
 									'input-group-focus': focus.topicFocus,
@@ -188,6 +187,7 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 							</InputGroup>
 						</FormGroup>
 
+						{/* DESCRIPTION */}
 						<FormGroup className="mb-3">
 							<Label for="description">Description</Label>
 							<InputGroup
@@ -206,6 +206,8 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 								/>
 							</InputGroup>
 						</FormGroup>
+
+						{/* COMPLETE SWITCH */}
 						<CardSubtitle>Mission is</CardSubtitle>
 						<Switch
 							size="lg"
@@ -216,13 +218,19 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 							onColor="success"
 							onText={<i className="tim-icons icon-check-2" />}
 						/>
+
+						{/* Alerts */}
 						{isError && <Alert color="warning">{errorMessage}</Alert>}
 						{isLoading && <Alert color="info">Updating Database. Thank you for waiting.</Alert>}
 						{isSaved && <Alert color="success">Changes saved successfully.</Alert>}
+
 						<div className="text-center">
+							{/* Update Button */}
 							<Button className="my-4" color="primary" type="button" onClick={() => onUpdate()}>
 								Update
 							</Button>
+
+							{/* Delete Button */}
 							<Button
 								className="my-4"
 								color="danger"
@@ -232,6 +240,8 @@ function EditModal({ isOpen, toggleModal, type, mission, data, setMission }) {
 							>
 								Delete
 							</Button>
+
+							{/* Delete Modal */}
 							<DeleteModal
 								toggle={toggleDelete}
 								toggleModal={e => setToggleDelete(e)}

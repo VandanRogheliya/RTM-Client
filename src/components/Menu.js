@@ -1,24 +1,19 @@
 import React, { useState } from 'react'
 
-import {
-	Button,
-	Label,
-	FormGroup,
-	Input,
-	InputGroupAddon,
-	InputGroupText,
-	InputGroup,
-	Container,
-	Row,
-	Col,
-} from 'reactstrap'
+// Importing Components
 import AddModal from './AddModal'
 
+// Importing Bootstrap Components
+import { Button, Container, Row, Col } from 'reactstrap'
+
 function Menu({ setCategoryTo, data }) {
+	// addModal's toggle state
 	const [addToggle, setAddToggle] = useState(false)
 
+	// Rendering JSX
 	return (
 		<Container>
+			{/* Catagory Buttons */}
 			<Row>
 				<Col>
 					<Button color="primary" className="w-50" size="lg" onClick={() => setCategoryTo('task')}>
@@ -47,6 +42,8 @@ function Menu({ setCategoryTo, data }) {
 					</Button>
 				</Col>
 			</Row>
+
+			{/* Add new Task/Goal Button */}
 			<Row className="mt-2">
 				<Col>
 					<Button color="success" className="mb-5" size="sm" onClick={() => setAddToggle(!addToggle)}>

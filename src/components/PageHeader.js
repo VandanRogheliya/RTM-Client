@@ -1,12 +1,16 @@
 import React, { useState } from 'react'
 import { Container } from 'reactstrap'
-import qoutes from "../assets/thoughts/quotes.json"
+
+// Importing quotes
+import quotes from '../assets/thoughts/quotes.json'
 
 function PageHeader() {
-	const [thought, setThought] = useState(qoutes[Math.floor(Math.random() * 1642)])
-	// console.log(Math.floor(Math.random() * 1642))
+	// Randomly selects a Quote out of 1643 quotes
+	const [quote, setQuote] = useState(quotes[Math.floor(Math.random() * 1642)])
+
 	return (
 		<div className="page-header header-filter">
+			{/* Moving Squares on the home page */}
 			<div className="squares square1" />
 			<div className="squares square2" />
 			<div className="squares square3" />
@@ -14,11 +18,13 @@ function PageHeader() {
 			<div className="squares square5" />
 			<div className="squares square6" />
 			<div className="squares square7" />
+			
+			{/* Displaying Title and Quote */}
 			<Container>
 				<div className="content-center brand">
 					<h1 className="h1-seo">RTM• Macro To Micro</h1>
 					<h3 className="d-none d-sm-block">
-						{thought.text} {thought.author && <i> - {thought.author}</i>}
+						{quote.text} {quote.author && <i> - {quote.author}</i>}
 					</h3>
 				</div>
 			</Container>
