@@ -18,13 +18,16 @@ function Mission({ type, id, data, setHome }) {
 	const getParentGoal = type => {
 		let tmpType = type.toLowerCase()
 		if (tmpType === 'task') {
-			return <h5>Parent Goal: {data['week'][mission.parent_goal].topic}</h5>
+			if (mission.parent_goal) return <h5>Parent Goal: {data['week'][mission.parent_goal].topic}</h5>
+			else return <h5>Parent Goal: NONE</h5>
 		}
 		if (tmpType === 'week') {
-			return <h5>Parent Goal: {data['month'][mission.parent_goal].topic}</h5>
+			if (mission.parent_goal) return <h5>Parent Goal: {data['month'][mission.parent_goal].topic}</h5>
+			else return <h5>Parent Goal: NONE</h5>
 		}
 		if (tmpType === 'month') {
-			return <h5>Parent Goal: {data['long'][mission.parent_goal].topic}</h5>
+			if (mission.parent_goal) return <h5>Parent Goal: {data['long'][mission.parent_goal].topic}</h5>
+			else return <h5>Parent Goal: NONE</h5>
 		}
 		if (tmpType === 'long') {
 			return <h5>Deadline: {new Date(mission.deadline).toLocaleDateString()}</h5>

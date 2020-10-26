@@ -144,10 +144,11 @@ function AddModal({ isOpen, toggleModal, data }) {
 			if (form.topic.length === 0 || form.description.length === 0) {
 				throw new Error('Topic and/or Description can not be empty.')
 			}
-			if (form.parent_goal && form.parent_goal === -1) {
-				throw new Error('There are no parent goals, please make a parent goal before.')
-			}
 			// Validation Done
+			
+			if (form.parent_goal && form.parent_goal === -1) {
+				form.parent_goal = null	
+			}
 
 			if (!data.completed && form.completed) {
 				form.complete_date = new Date().toISOString()
