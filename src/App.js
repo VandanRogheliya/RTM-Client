@@ -9,6 +9,7 @@ import './App.css'
 // Components
 import Home from './views/Home'
 import Mission from './views/Mission'
+import Visualize from './views/Visualize'
 
 // App Component
 function App() {
@@ -25,7 +26,7 @@ function App() {
 	})
 
 	// Home State, if true shows Home else Mission 
-	const [home, setHome] = useState(true)
+	const [home, setHome] = useState(1)
 
 	// States of goal/task for Mission component
 	const [type, setType] = useState('')
@@ -70,17 +71,25 @@ function App() {
 
 	// If data has not yet been fetch, then fetch it
 	if (data.task === -1) getData()
-	
+	// TODO: Uncomment code
 	// Rendering JSX
 	return (
 		<div className="App">
 			{isLoading ? (
 				<h1>Loading...</h1>
-			) : home ? (
+			) : home === 1 ? (
 				<Home data={data} setType={e => setType(e)} setId={e => setId(e)} setHome={e => setHome(e)} />
-			) : (
+			) : home === 0 ? (
 				<Mission type={type} id={id} data={data} setHome={e => setHome(e)} />
-			)}
+			) : 
+			<Visualize data={data} setHome={e => setHome(e)}/> 
+			}
+
+			{/* {isLoading ? (
+				<h1>Loading...</h1>
+			): 
+			<Visualize data={data} /> 
+			} */}
 		</div>
 	)
 }

@@ -39,7 +39,7 @@ export default function TableList({ data, searchQuery, display, setType, setId, 
 	const onSelect = (type, key) => {
 		setId(key)
 		setType(type)
-		setHome(false)
+		setHome(0)
 	}
 
 	// Rendering JSX

@@ -65,9 +65,11 @@ function Home({ data, setType, setId, setHome }) {
 					setHome={e => setHome(e)}
 				/>
 			)}
-			
+
 			{/* Catagory selection menue */}
-			{category.all && <Menu setCategoryTo={type => setCategoryTo(type)} data={data} />}
+			{category.all && (
+				<Menu setCategoryTo={type => setCategoryTo(type)} data={data} setHome={e => setHome(e)} />
+			)}
 		</div>
 	)
 }

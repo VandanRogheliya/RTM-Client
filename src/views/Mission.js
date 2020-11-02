@@ -50,7 +50,7 @@ function Mission({ type, id, data, setHome }) {
 			<h1 className="h1-seo mt-4">RTM</h1>
 
 			{/* Back Button */}
-			<Button color="default" className="btn-round  back-btn" onClick={() => setHome(true)}>
+			<Button color="default" className="btn-round  back-btn" onClick={() => setHome(1)}>
 				<i className="tim-icons icon-double-left" />
 			</Button>
 

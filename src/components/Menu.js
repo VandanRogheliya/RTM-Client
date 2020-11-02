@@ -6,7 +6,7 @@ import AddModal from './AddModal'
 // Importing Bootstrap Components
 import { Button, Container, Row, Col } from 'reactstrap'
 
-function Menu({ setCategoryTo, data }) {
+function Menu({ setCategoryTo, data, setHome }) {
 	// addModal's toggle state
 	const [addToggle, setAddToggle] = useState(false)
 
@@ -46,8 +46,15 @@ function Menu({ setCategoryTo, data }) {
 			{/* Add new Task/Goal Button */}
 			<Row className="mt-2">
 				<Col>
-					<Button color="success" className="mb-5" size="sm" onClick={() => setAddToggle(!addToggle)}>
+					<Button color="success" size="sm" onClick={() => setAddToggle(!addToggle)}>
 						Add New Task/Goal
+					</Button>
+				</Col>
+			</Row>
+			<Row className="mt-2">
+				<Col>
+					<Button color="default" className="mb-5" size="sm" onClick={() => setHome(2)}>
+						Visualize
 					</Button>
 				</Col>
 			</Row>
