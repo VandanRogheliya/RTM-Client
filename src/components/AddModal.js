@@ -15,6 +15,7 @@ import {
 	InputGroupAddon,
 	Alert,
 } from 'reactstrap'
+import config from '../config/config'
 
 // Focus initialState
 const initialState = {
@@ -62,7 +63,7 @@ const reducer = (state, action) => {
 // Populate Goals Helper function
 const populateGoalsHelper = (parentType, data) => {
 	var options = []
-	options.push(<option value={-1}>No Parent Goal Selected</option>)
+	options.push(<option value={-1} key={-1}>No Parent Goal Selected</option>)
 	for (var key in data[parentType]) {
 		options.push(<option key={key} value={key}>{data[parentType][key].topic}</option>)
 	}
@@ -156,7 +157,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 
 			setIsLoading(true)
 
-			await fetch(`http://localhost:5000/${type.toLowerCase()}`, {
+			await fetch(`${config.api}/${type.toLowerCase()}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

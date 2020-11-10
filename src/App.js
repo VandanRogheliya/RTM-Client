@@ -11,6 +11,9 @@ import Home from './views/Home'
 import Mission from './views/Mission'
 import Visualize from './views/Visualize'
 
+// Importing API link
+import config from './config/config'
+
 // App Component
 function App() {
 
@@ -38,17 +41,16 @@ function App() {
 		var weekData = new Map()
 		var monthData = new Map()
 		var longData = new Map()
-
-		var task = await fetch('http://localhost:5000/task')
+		var task = await fetch(`${config.api}/task`)
 		task = await task.json()
 
-		var week = await fetch('http://localhost:5000/week')
+		var week = await fetch(`${config.api}/week`)
 		week = await week.json()
 
-		var month = await fetch('http://localhost:5000/month')
+		var month = await fetch(`${config.api}/month`)
 		month = await month.json()
 
-		var long = await fetch('http://localhost:5000/long')
+		var long = await fetch(`${config.api}/long`)
 		long = await long.json()
 
 		// Storing each task/goal in form of map. Key -> ID and Value -> task/goal object
@@ -71,7 +73,7 @@ function App() {
 
 	// If data has not yet been fetch, then fetch it
 	if (data.task === -1) getData()
-	// TODO: Uncomment code
+	
 	// Rendering JSX
 	return (
 		<div className="App">
@@ -85,11 +87,6 @@ function App() {
 			<Visualize data={data} setHome={e => setHome(e)}/> 
 			}
 
-			{/* {isLoading ? (
-				<h1>Loading...</h1>
-			): 
-			<Visualize data={data} /> 
-			} */}
 		</div>
 	)
 }
