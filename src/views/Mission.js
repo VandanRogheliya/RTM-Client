@@ -8,8 +8,7 @@ import { Button, Card, CardHeader, CardBody, Container, Row, Col, Badge, CardFoo
 
 // Mission Component Defination
 function Mission({ type, id, data, setHome }) {
-	// Mission state
-	const [mission, setMission] = useState(data[type.toLowerCase()][id])
+	const mission = data[type.toLowerCase()][id]
 
 	// EditModal's toggle
 	const [editModal, setEditModal] = useState(false)

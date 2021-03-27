@@ -71,7 +71,6 @@ function App() {
   }
 
   // If data has not yet been fetch, then fetch it
-  // if (data.task === -1)
   useEffect(() => {
     getData()
   }, [])

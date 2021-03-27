@@ -261,7 +261,6 @@ function AddModal({ isOpen, toggleModal, data }) {
 						{type !== 'long' ? (
 							<FormGroup className="mb-3">
 								{/* PARENT GOAL */}
-
 								<Label for="parent">Parent Goal</Label>
 
 								<InputGroup
