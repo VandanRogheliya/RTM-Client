@@ -20,7 +20,7 @@ function App() {
   // Loading State
   const [isLoading, setIsLoading] = useState(true)
 
-  const [isSignedIn, setIsSignedIn] = useState(false)
+  const [isSignedIn, setIsSignedIn] = useState(true)
 
   // Data State
   const [data, setData] = useState({
