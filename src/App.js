@@ -18,10 +18,10 @@ import { Landing } from './views/Landing'
 // App Component
 function App() {
   // Loading State
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
-  const [isSignedIn, setIsSignedIn] = useState(true)
-
+  const [isSignedIn, setIsSignedIn] = useState(false)
+  
   // Data State
   const [data, setData] = useState({
     task: -1,
