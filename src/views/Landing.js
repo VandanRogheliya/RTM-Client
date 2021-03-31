@@ -20,12 +20,13 @@ import PageHeader from '../components/PageHeader'
 
 
 export const Landing = (isOpen, toggleModal, data) => {
-	// addModal's toggle state
+	
 	const [signinToggle, setSigninToggle] = useState(false)
 	const [signupToggle, setSignupToggle] = useState(false)
   return (
     <div>
 	<Signin isOpen={signinToggle} toggleModal={e => setSigninToggle(e)} data={data} />
+	
 	<Signup isOpen={signupToggle} toggleModal={e => setSignupToggle(e)} data={data} />
 	<div className="wrapper index-page">
 				<PageHeader />
