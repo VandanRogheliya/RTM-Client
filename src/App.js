@@ -13,6 +13,7 @@ import Visualize from './views/Visualize'
 
 // Importing API link
 import config from './config/config'
+import Landing from './views/Landing'
 
 // App Component
 function App() {
@@ -20,6 +21,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true)
 
   // Data State
+  const [isSignedIn, setIsSignedIn] = useState(false)
   const [data, setData] = useState({
     task: -1,
     week: -1,
@@ -78,7 +80,9 @@ function App() {
   // Rendering JSX
   return (
     <div className='App'>
-      {isLoading ? (
+      {!isSignedIn ? (
+        <Landing />
+      ) : isLoading ? (
         <h1>Loading...</h1>
       ) : home === 1 ? (
         <Home
