@@ -10,10 +10,11 @@ import './App.css'
 import Home from './views/Home'
 import Mission from './views/Mission'
 import Visualize from './views/Visualize'
+import Landing from './views/Landing'
 
 // Importing API link
 import config from './config/config'
-import { Landing } from './views/Landing'
+import { authFetch } from './lib/util'
 
 // App Component
 function App() {
@@ -21,7 +22,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false)
 
   const [isSignedIn, setIsSignedIn] = useState(false)
-  
+
   // Data State
   const [data, setData] = useState({
     task: -1,
@@ -37,29 +38,33 @@ function App() {
   const [type, setType] = useState('')
   const [id, setId] = useState(0)
 
+  useEffect(() => {
+    checkIsLoggedIn()
+  }, [])
+
   // Fetching All Data
   const getData = async () => {
     var taskData = new Map()
     var weekData = new Map()
     var monthData = new Map()
     var longData = new Map()
-    var task = await fetch(`${config.api}/task`)
+    var task = await authFetch(`${config.api}/task`)
     task = await task.json()
 
-    var week = await fetch(`${config.api}/week`)
+    var week = await authFetch(`${config.api}/week`)
     week = await week.json()
 
-    var month = await fetch(`${config.api}/month`)
+    var month = await authFetch(`${config.api}/month`)
     month = await month.json()
 
-    var long = await fetch(`${config.api}/long`)
+    var long = await authFetch(`${config.api}/long`)
     long = await long.json()
 
     // Storing each task/goal in form of map. Key -> ID and Value -> task/goal object
-    task.forEach((e) => (taskData[e.id] = e))
-    week.forEach((e) => (weekData[e.id] = e))
-    month.forEach((e) => (monthData[e.id] = e))
-    long.forEach((e) => (longData[e.id] = e))
+    task.forEach(e => (taskData[e.id] = e))
+    week.forEach(e => (weekData[e.id] = e))
+    month.forEach(e => (monthData[e.id] = e))
+    long.forEach(e => (longData[e.id] = e))
 
     // Changing State
     setData({
@@ -73,10 +78,26 @@ function App() {
     setIsLoading(false)
   }
 
-  // If data has not yet been fetch, then fetch it
-  useEffect(() => {
-    getData()
-  }, [])
+  const checkIsLoggedIn = async () => {
+    const token = localStorage.RTMAuthToken
+    if (token === null) return
+
+    try {
+      var response = await authFetch(`${config.api}/user/verifyJWT`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status === 200) {
+        setIsSignedIn(true)
+        getData()
+      }
+    } catch (err) {
+      return false
+    }
+  }
 
   // Rendering JSX
   return (
@@ -88,14 +109,14 @@ function App() {
       ) : home === 1 ? (
         <Home
           data={data}
-          setType={(e) => setType(e)}
-          setId={(e) => setId(e)}
-          setHome={(e) => setHome(e)}
+          setType={e => setType(e)}
+          setId={e => setId(e)}
+          setHome={e => setHome(e)}
         />
       ) : home === 0 ? (
-        <Mission type={type} id={id} data={data} setHome={(e) => setHome(e)} />
+        <Mission type={type} id={id} data={data} setHome={e => setHome(e)} />
       ) : (
-        <Visualize data={data} setHome={(e) => setHome(e)} />
+        <Visualize data={data} setHome={e => setHome(e)} />
       )}
     </div>
   )

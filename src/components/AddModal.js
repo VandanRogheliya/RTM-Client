@@ -16,6 +16,7 @@ import {
 	Alert,
 } from 'reactstrap'
 import config from '../config/config'
+import { authFetch } from '../lib/util'
 
 // Focus initialState
 const initialState = {
@@ -63,9 +64,9 @@ const reducer = (state, action) => {
 // Populate Goals Helper function
 const populateGoalsHelper = (parentType, data) => {
 	var options = []
-	options.push(<option value={-1} key={-1}>No Parent Goal Selected</option>)
+	options.push(<option className="text-dark" value={-1} key={-1}>No Parent Goal Selected</option>)
 	for (var key in data[parentType]) {
-		options.push(<option key={key} value={key}>{data[parentType][key].topic}</option>)
+		options.push(<option className="text-dark" key={key} value={key}>{data[parentType][key].topic}</option>)
 	}
 
 	return options
@@ -157,7 +158,7 @@ function AddModal({ isOpen, toggleModal, data }) {
 
 			setIsLoading(true)
 
-			await fetch(`${config.api}/${type.toLowerCase()}`, {
+			await authFetch(`${config.api}/${type.toLowerCase()}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -251,10 +252,10 @@ function AddModal({ isOpen, toggleModal, data }) {
 									defaultValue={type}
 									onChange={e => onChangeHandler(e.target.value, setType)}
 								>
-									<option value="task">Task</option>
-									<option value="week">Weekly Goal</option>
-									<option value="month">Monthly Goal</option>
-									<option value="long">Long Term Goal</option>
+									<option className="text-dark" value="task">Task</option>
+									<option className="text-dark" value="week">Weekly Goal</option>
+									<option className="text-dark" value="month">Monthly Goal</option>
+									<option className="text-dark" value="long">Long Term Goal</option>
 								</Input>
 							</InputGroup>
 						</FormGroup>

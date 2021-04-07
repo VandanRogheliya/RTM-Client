@@ -1,10 +1,11 @@
 import React from 'react'
 import { Container } from 'reactstrap'
+import Button from 'reactstrap/lib/Button'
 
 // Importing quotes
 import quotes from '../assets/thoughts/quotes.json'
 
-function PageHeader() {
+function PageHeader({ setSignupToggle, setSigninToggle, isLanding = false }) {
   // Randomly selects a Quote out of 1643 quotes
   const quote = quotes[Math.floor(Math.random() * 1642)]
 
@@ -23,8 +24,30 @@ function PageHeader() {
       <Container>
         <div className='content-center brand'>
           <h1 className='h1-seo'>RTM• Macro To Micro</h1>
-          <h3 className='d-none d-sm-block'>
-            {quote.text} {quote.author && <i> - {quote.author}</i>}
+          <h3 >
+            {isLanding ? (
+              <>
+                <Button
+                  className='my-4'
+                  color='primary'
+                  type='button'
+                  onClick={() => setSignupToggle(true)}
+                >
+                  Sign Up
+                </Button>
+                <Button
+                  className='my-4'
+                  type='button'
+                  onClick={() => setSigninToggle(true)}
+                >
+                  Log In
+                </Button>
+              </>
+            ) : (
+              <div className='d-none d-sm-block'>
+                {quote.text} {quote.author && <i> - {quote.author}</i>}
+              </div>
+            )}
           </h3>
         </div>
       </Container>

@@ -20,6 +20,7 @@ import {
 } from 'reactstrap'
 import Switch from 'react-bootstrap-switch'
 import config from '../config/config'
+import { authFetch } from '../lib/util'
 
 // Focus initialState
 const initialState = {
@@ -99,7 +100,7 @@ function EditModal({ isOpen, toggleModal, type, mission, data }) {
 			setIsLoading(true)
 
 			// PUT request sent to database
-			await fetch(`${config.api}/${type.toLowerCase()}/${mission.id}`, {
+			await authFetch(`${config.api}/${type.toLowerCase()}/${mission.id}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
@@ -129,9 +130,13 @@ function EditModal({ isOpen, toggleModal, type, mission, data }) {
 	// Delete handler
 	const onDelete = async () => {
 		try {
-			var resp = await fetch(`${config.api}/${type.toLowerCase()}/${mission.id}`, {
+			var resp = await authFetch(`${config.api}/${type.toLowerCase()}/${mission.id}`, {
 				method: 'DELETE',
 			})
+
+			if (!resp.ok) {
+				throw new Error('Something went wrong')
+			}
 
 			resp = await resp.json()
 
