@@ -19,7 +19,7 @@ import { authFetch } from './lib/util'
 // App Component
 function App() {
   // Loading State
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   const [isSignedIn, setIsSignedIn] = useState(false)
 
@@ -44,6 +44,7 @@ function App() {
 
   // Fetching All Data
   const getData = async () => {
+    setIsLoading(true)
     var taskData = new Map()
     var weekData = new Map()
     var monthData = new Map()
@@ -81,7 +82,6 @@ function App() {
   const checkIsLoggedIn = async () => {
     const token = localStorage.RTMAuthToken
     if (token === null) return
-
     try {
       var response = await authFetch(`${config.api}/user/verifyJWT`, {
         method: 'GET',
@@ -97,27 +97,31 @@ function App() {
     } catch (err) {
       return false
     }
+    setIsLoading(false)
   }
 
   // Rendering JSX
   return (
     <div className='App'>
-      {!isSignedIn ? (
-        <Landing />
-      ) : isLoading ? (
-        <h1>Loading...</h1>
-      ) : home === 1 ? (
-        <Home
-          data={data}
-          setType={e => setType(e)}
-          setId={e => setId(e)}
-          setHome={e => setHome(e)}
-        />
-      ) : home === 0 ? (
-        <Mission type={type} id={id} data={data} setHome={e => setHome(e)} />
-      ) : (
-        <Visualize data={data} setHome={e => setHome(e)} />
-      )}
+      {
+        isLoading ? (
+          <h1>Loading...</h1>
+        ) :
+          !isSignedIn ? (
+            <Landing />
+          )
+            : home === 1 ? (
+              <Home
+                data={data}
+                setType={e => setType(e)}
+                setId={e => setId(e)}
+                setHome={e => setHome(e)}
+              />
+            ) : home === 0 ? (
+              <Mission type={type} id={id} data={data} setHome={e => setHome(e)} />
+            ) : (
+              <Visualize data={data} setHome={e => setHome(e)} />
+            )}
     </div>
   )
 }
